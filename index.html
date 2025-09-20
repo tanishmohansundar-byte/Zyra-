@@ -10,75 +10,43 @@
       font-family: "Orbitron", sans-serif;
       background: #050505;
       color: cyan;
+      overflow: hidden;
     }
 
     header {
       text-align: center;
-      padding: 30px;
-      font-size: 2.5rem;
+      padding: 20px;
+      font-size: 2rem;
       text-shadow: 0 0 20px cyan, 0 0 40px blue;
       border-bottom: 2px solid cyan;
     }
 
-    section {
-      padding: 50px 20px;
-      text-align: center;
+    .screen {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: transform 0.8s ease-in-out;
     }
 
     h2 {
-      font-size: 2rem;
-      margin-bottom: 30px;
-      color: #0ff;
+      margin-bottom: 20px;
       text-shadow: 0 0 10px cyan;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 25px;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .card {
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid cyan;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 0 15px cyan, 0 0 25px blue;
-      transition: 0.3s;
-    }
-
-    .card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px cyan, 0 0 50px blue;
-    }
-
-    .card h3 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-      color: #fff;
-    }
-
-    .form-container {
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid cyan;
-      border-radius: 15px;
-      padding: 30px;
-      max-width: 500px;
-      margin: 40px auto;
-      box-shadow: 0 0 15px cyan, 0 0 25px blue;
-    }
-
-    input, select {
-      width: 100%;
+    input {
       padding: 10px;
-      margin: 10px 0;
+      font-size: 1rem;
+      margin-bottom: 15px;
       background: black;
       border: 1px solid cyan;
       color: cyan;
       border-radius: 8px;
-      font-size: 1rem;
     }
 
     button {
@@ -86,16 +54,40 @@
       border: 2px solid cyan;
       background: transparent;
       color: cyan;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       cursor: pointer;
       border-radius: 12px;
       transition: 0.3s;
+      margin: 10px;
     }
 
     button:hover {
       background: cyan;
       color: black;
       box-shadow: 0 0 20px cyan;
+    }
+
+    .options {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .card {
+      padding: 20px;
+      border: 2px solid cyan;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.8);
+      box-shadow: 0 0 15px cyan;
+      cursor: pointer;
+      transition: 0.3s;
+      min-width: 200px;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px cyan, 0 0 50px blue;
     }
 
     #bill {
@@ -110,16 +102,6 @@
       text-align: center;
     }
 
-    #bill h3 {
-      color: white;
-      margin-bottom: 15px;
-    }
-
-    #bill p {
-      color: #0ff;
-      font-size: 1.1rem;
-    }
-
     #qr {
       margin: 20px 0;
     }
@@ -127,67 +109,94 @@
 </head>
 <body>
 
-  <header>⚡ Zyra Electronics ⚡</header>
+<header>⚡ Zyra Electronics ⚡</header>
 
-  <!-- Catalog (shortened for space) -->
-  <section>
-    <h2>📱 Zyra Phones</h2>
-    <div class="grid">
-      <div class="card"><h3>Zyra Pulse X1</h3></div>
-      <div class="card"><h3>Zyra Nova Z</h3></div>
-      <div class="card"><h3>Zyra Quantum Pro</h3></div>
-    </div>
-  </section>
+<!-- Screen 1: Name -->
+<div class="screen" id="screen1">
+  <h2>Welcome to Zyra</h2>
+  <input type="text" id="username" placeholder="Enter your name">
+  <p>Click proceed to continue.</p>
+  <button onclick="goTo(2)">Proceed</button>
+</div>
 
-  <!-- User Details Form -->
-  <section>
-    <h2>📝 Enter Your Details</h2>
-    <div class="form-container">
-      <form id="orderForm">
-        <input type="text" id="name" placeholder="Full Name" required>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="text" id="address" placeholder="Delivery Address" required>
-        <select id="product" required>
-          <option value="">Select Product</option>
-          <option>Zyra Pulse X1</option>
-          <option>Zyra Nova Z</option>
-          <option>Zyra Quantum Pro</option>
-          <option>ZyraBook Edge</option>
-          <option>ZyraPad Stellar</option>
-        </select>
-        <button type="submit">Generate Bill</button>
-      </form>
-    </div>
-  </section>
-
-  <!-- Bill Section -->
-  <div id="bill">
-    <h3>🧾 Zyra Electronics - Purchase Bill</h3>
-    <p id="billDetails"></p>
-    <div id="qr"></div>
-    <p><strong>⚠ Show this bill to the front desk. You will receive your product within 3 hours.</strong></p>
+<!-- Screen 2: Category -->
+<div class="screen" id="screen2" style="transform: translateX(100vw);">
+  <h2>What do you want to buy?</h2>
+  <div class="options">
+    <div class="card" onclick="showModels('Phones')">📱 Phones</div>
+    <div class="card" onclick="showModels('Laptops')">💻 Laptops</div>
+    <div class="card" onclick="showModels('ZyraPads')">📟 ZyraPads</div>
   </div>
+  <button onclick="goTo(1)">⬅ Back</button>
+</div>
 
-  <script>
-    document.getElementById("orderForm").addEventListener("submit", function(e){
-      e.preventDefault();
+<!-- Screen 3: Models -->
+<div class="screen" id="screen3" style="transform: translateX(200vw);">
+  <h2 id="modelTitle"></h2>
+  <div class="options" id="models"></div>
+  <button onclick="goTo(2)">⬅ Back</button>
+</div>
 
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      const address = document.getElementById("address").value;
-      const product = document.getElementById("product").value;
+<!-- Bill -->
+<div id="bill">
+  <h2>🧾 Zyra Electronics - Bill</h2>
+  <p id="billDetails"></p>
+  <div id="qr"></div>
+  <p><strong>⚠ Show this bill to the front desk. You will receive your product within 3 hours.</strong></p>
+</div>
 
-      const billText = `Customer: ${name}\nEmail: ${email}\nAddress: ${address}\nProduct: ${product}`;
-      document.getElementById("billDetails").innerText = billText;
+<script>
+  let current = 1;
+  let selectedProduct = "";
+  let username = "";
 
-      // Generate QR Code using API
-      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(billText)}`;
-      document.getElementById("qr").innerHTML = `<img src="${qrUrl}" alt="QR Code">`;
+  function goTo(num) {
+    current = num;
+    document.getElementById("screen1").style.transform = `translateX(${(1-num)*100}vw)`;
+    document.getElementById("screen2").style.transform = `translateX(${(2-num)*100}vw)`;
+    document.getElementById("screen3").style.transform = `translateX(${(3-num)*100}vw)`;
+  }
 
-      document.getElementById("bill").style.display = "block";
-      document.getElementById("bill").scrollIntoView({behavior: "smooth"});
+  function showModels(category) {
+    const modelTitle = document.getElementById("modelTitle");
+    const modelsDiv = document.getElementById("models");
+    modelsDiv.innerHTML = ""; // clear previous
+
+    let models = [];
+    if (category === "Phones") {
+      models = ["Zyra Pulse X1", "Zyra Nova Z", "Zyra Quantum Pro", "Zyra Flux Mini", "Zyra Aero"];
+    } else if (category === "Laptops") {
+      models = ["ZyraBook Core", "ZyraBook Edge", "ZyraBook Titan", "ZyraBook Quantum", "ZyraBook Volt"];
+    } else {
+      models = ["ZyraPad Lite", "ZyraPad Orbit", "ZyraPad Stellar", "ZyraPad Flux", "ZyraPad Zenith"];
+    }
+
+    modelTitle.innerText = `Select a ${category} Model`;
+    models.forEach(m => {
+      let btn = document.createElement("button");
+      btn.innerText = m;
+      btn.onclick = () => generateBill(m);
+      modelsDiv.appendChild(btn);
     });
-  </script>
+
+    goTo(3);
+  }
+
+  function generateBill(product) {
+    username = document.getElementById("username").value || "Customer";
+    selectedProduct = product;
+
+    const billText = `Name: ${username}\nProduct: ${selectedProduct}`;
+    document.getElementById("billDetails").innerText = billText;
+
+    // Generate QR
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(billText)}`;
+    document.getElementById("qr").innerHTML = `<img src="${qrUrl}" alt="QR Code">`;
+
+    document.getElementById("bill").style.display = "block";
+    document.getElementById("bill").scrollIntoView({behavior: "smooth"});
+  }
+</script>
 
 </body>
 </html>
