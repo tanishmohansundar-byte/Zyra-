@@ -10,7 +10,6 @@
       font-family: "Orbitron", sans-serif;
       background: #050505;
       color: cyan;
-      overflow: hidden;
     }
 
     header {
@@ -24,14 +23,15 @@
     .screen {
       height: 100vh;
       width: 100vw;
-      display: flex;
+      display: none; /* all hidden by default */
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      position: absolute;
-      top: 0;
-      left: 0;
-      transition: transform 0.8s ease-in-out;
+      text-align: center;
+    }
+
+    .active {
+      display: flex; /* only the active screen is shown */
     }
 
     h2 {
@@ -83,22 +83,11 @@
       cursor: pointer;
       transition: 0.3s;
       min-width: 200px;
-      text-align: center;
     }
 
     .card:hover {
       transform: scale(1.05);
       box-shadow: 0 0 30px cyan, 0 0 50px blue;
-    }
-
-    #billScreen {
-      height: 100vh;
-      width: 100vw;
-      display: none; /* hidden until model is selected */
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
     }
 
     #bill {
@@ -121,33 +110,33 @@
 <header>⚡ Zyra Electronics ⚡</header>
 
 <!-- Screen 1: Name -->
-<div class="screen" id="screen1">
+<div class="screen active" id="screen1">
   <h2>Welcome to Zyra</h2>
   <input type="text" id="username" placeholder="Enter your name">
   <p>Click proceed to continue.</p>
-  <button onclick="goTo(2)">Proceed</button>
+  <button onclick="showScreen(2)">Proceed</button>
 </div>
 
 <!-- Screen 2: Category -->
-<div class="screen" id="screen2" style="transform: translateX(100vw);">
+<div class="screen" id="screen2">
   <h2>What do you want to buy?</h2>
   <div class="options">
     <div class="card" onclick="showModels('Phones')">📱 Phones</div>
     <div class="card" onclick="showModels('Laptops')">💻 Laptops</div>
     <div class="card" onclick="showModels('ZyraPads')">📟 ZyraPads</div>
   </div>
-  <button onclick="goTo(1)">⬅ Back</button>
+  <button onclick="showScreen(1)">⬅ Back</button>
 </div>
 
 <!-- Screen 3: Models -->
-<div class="screen" id="screen3" style="transform: translateX(200vw);">
+<div class="screen" id="screen3">
   <h2 id="modelTitle"></h2>
   <div class="options" id="models"></div>
-  <button onclick="goTo(2)">⬅ Back</button>
+  <button onclick="showScreen(2)">⬅ Back</button>
 </div>
 
-<!-- Bill Screen -->
-<div id="billScreen">
+<!-- Screen 4: Bill -->
+<div class="screen" id="screen4">
   <div id="bill">
     <h2>🧾 Zyra Electronics - Bill</h2>
     <p id="billDetails"></p>
@@ -158,28 +147,23 @@
 </div>
 
 <script>
-  let current = 1;
   let selectedProduct = "";
   let selectedPrice = 0;
   let username = "";
 
-  // Price list
   const productPrices = {
-    // Phones
     "Zyra Pulse X1": 12000,
     "Zyra Nova Z": 18000,
     "Zyra Quantum Pro": 25000,
     "Zyra Flux Mini": 15000,
     "Zyra Aero": 20000,
 
-    // Laptops
     "ZyraBook Core": 30000,
     "ZyraBook Edge": 35000,
     "ZyraBook Titan": 40000,
     "ZyraBook Quantum": 45000,
-    "ZyraBook Volt": 48000, // 💎 Most expensive
+    "ZyraBook Volt": 48000, // premium
 
-    // ZyraPads
     "ZyraPad Lite": 10000,
     "ZyraPad Orbit": 16000,
     "ZyraPad Stellar": 20000,
@@ -187,20 +171,55 @@
     "ZyraPad Zenith": 28000
   };
 
-  function goTo(num) {
-    current = num;
-    document.getElementById("screen1").style.transform = `translateX(${(1-num)*100}vw)`;
-    document.getElementById("screen2").style.transform = `translateX(${(2-num)*100}vw)`;
-    document.getElementById("screen3").style.transform = `translateX(${(3-num)*100}vw)`;
+  function showScreen(num) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.getElementById("screen" + num).classList.add("active");
   }
 
   function showModels(category) {
     const modelTitle = document.getElementById("modelTitle");
     const modelsDiv = document.getElementById("models");
-    modelsDiv.innerHTML = ""; // clear previous
+    modelsDiv.innerHTML = "";
 
     let models = [];
     if (category === "Phones") {
       models = ["Zyra Pulse X1", "Zyra Nova Z", "Zyra Quantum Pro", "Zyra Flux Mini", "Zyra Aero"];
     } else if (category === "Laptops") {
-      models = ["ZyraBook Core", "ZyraBook Edge", "ZyraBook Titan", "ZyraBook Quantum", "ZyraBook]()
+      models = ["ZyraBook Core", "ZyraBook Edge", "ZyraBook Titan", "ZyraBook Quantum", "ZyraBook Volt"];
+    } else {
+      models = ["ZyraPad Lite", "ZyraPad Orbit", "ZyraPad Stellar", "ZyraPad Flux", "ZyraPad Zenith"];
+    }
+
+    modelTitle.innerText = `Select a ${category} Model`;
+    models.forEach(m => {
+      let btn = document.createElement("button");
+      btn.innerText = `${m} - ${productPrices[m]} lators`;
+      btn.onclick = () => generateBill(m);
+      modelsDiv.appendChild(btn);
+    });
+
+    showScreen(3);
+  }
+
+  function generateBill(product) {
+    username = document.getElementById("username").value || "Customer";
+    selectedProduct = product;
+    selectedPrice = productPrices[product];
+
+    const billText = `Name: ${username}\nProduct: ${selectedProduct}\nPrice: ${selectedPrice} lators`;
+    document.getElementById("billDetails").innerText = billText;
+
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(billText)}`;
+    document.getElementById("qr").innerHTML = `<img src="${qrUrl}" alt="QR Code">`;
+
+    showScreen(4);
+  }
+
+  function reset() {
+    document.getElementById("username").value = "";
+    showScreen(1);
+  }
+</script>
+
+</body>
+</html>
