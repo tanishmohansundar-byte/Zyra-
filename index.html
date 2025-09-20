@@ -83,6 +83,7 @@
       cursor: pointer;
       transition: 0.3s;
       min-width: 200px;
+      text-align: center;
     }
 
     .card:hover {
@@ -90,14 +91,22 @@
       box-shadow: 0 0 30px cyan, 0 0 50px blue;
     }
 
+    #billScreen {
+      height: 100vh;
+      width: 100vw;
+      display: none; /* hidden until model is selected */
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
     #bill {
-      display: none;
       background: rgba(0, 0, 0, 0.8);
       border: 2px solid cyan;
       border-radius: 15px;
       padding: 30px;
       max-width: 600px;
-      margin: 40px auto;
       box-shadow: 0 0 15px cyan, 0 0 25px blue;
       text-align: center;
     }
@@ -137,18 +146,46 @@
   <button onclick="goTo(2)">⬅ Back</button>
 </div>
 
-<!-- Bill -->
-<div id="bill">
-  <h2>🧾 Zyra Electronics - Bill</h2>
-  <p id="billDetails"></p>
-  <div id="qr"></div>
-  <p><strong>⚠ Show this bill to the front desk. You will receive your product within 3 hours.</strong></p>
+<!-- Bill Screen -->
+<div id="billScreen">
+  <div id="bill">
+    <h2>🧾 Zyra Electronics - Bill</h2>
+    <p id="billDetails"></p>
+    <div id="qr"></div>
+    <p><strong>⚠ Show this bill to the front desk. You will receive your product within 3 hours.</strong></p>
+    <button onclick="reset()">🏠 Back to Home</button>
+  </div>
 </div>
 
 <script>
   let current = 1;
   let selectedProduct = "";
+  let selectedPrice = 0;
   let username = "";
+
+  // Price list
+  const productPrices = {
+    // Phones
+    "Zyra Pulse X1": 12000,
+    "Zyra Nova Z": 18000,
+    "Zyra Quantum Pro": 25000,
+    "Zyra Flux Mini": 15000,
+    "Zyra Aero": 20000,
+
+    // Laptops
+    "ZyraBook Core": 30000,
+    "ZyraBook Edge": 35000,
+    "ZyraBook Titan": 40000,
+    "ZyraBook Quantum": 45000,
+    "ZyraBook Volt": 48000, // 💎 Most expensive
+
+    // ZyraPads
+    "ZyraPad Lite": 10000,
+    "ZyraPad Orbit": 16000,
+    "ZyraPad Stellar": 20000,
+    "ZyraPad Flux": 22000,
+    "ZyraPad Zenith": 28000
+  };
 
   function goTo(num) {
     current = num;
@@ -166,37 +203,4 @@
     if (category === "Phones") {
       models = ["Zyra Pulse X1", "Zyra Nova Z", "Zyra Quantum Pro", "Zyra Flux Mini", "Zyra Aero"];
     } else if (category === "Laptops") {
-      models = ["ZyraBook Core", "ZyraBook Edge", "ZyraBook Titan", "ZyraBook Quantum", "ZyraBook Volt"];
-    } else {
-      models = ["ZyraPad Lite", "ZyraPad Orbit", "ZyraPad Stellar", "ZyraPad Flux", "ZyraPad Zenith"];
-    }
-
-    modelTitle.innerText = `Select a ${category} Model`;
-    models.forEach(m => {
-      let btn = document.createElement("button");
-      btn.innerText = m;
-      btn.onclick = () => generateBill(m);
-      modelsDiv.appendChild(btn);
-    });
-
-    goTo(3);
-  }
-
-  function generateBill(product) {
-    username = document.getElementById("username").value || "Customer";
-    selectedProduct = product;
-
-    const billText = `Name: ${username}\nProduct: ${selectedProduct}`;
-    document.getElementById("billDetails").innerText = billText;
-
-    // Generate QR
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(billText)}`;
-    document.getElementById("qr").innerHTML = `<img src="${qrUrl}" alt="QR Code">`;
-
-    document.getElementById("bill").style.display = "block";
-    document.getElementById("bill").scrollIntoView({behavior: "smooth"});
-  }
-</script>
-
-</body>
-</html>
+      models = ["ZyraBook Core", "ZyraBook Edge", "ZyraBook Titan", "ZyraBook Quantum", "ZyraBook]()
