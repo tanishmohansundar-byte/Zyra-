@@ -10,7 +10,6 @@
       font-family: "Orbitron", sans-serif;
       background: #050505;
       color: cyan;
-      overflow-x: hidden;
     }
 
     header {
@@ -61,9 +60,68 @@
       color: #fff;
     }
 
-    .card p {
+    .form-container {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid cyan;
+      border-radius: 15px;
+      padding: 30px;
+      max-width: 500px;
+      margin: 40px auto;
+      box-shadow: 0 0 15px cyan, 0 0 25px blue;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background: black;
+      border: 1px solid cyan;
+      color: cyan;
+      border-radius: 8px;
       font-size: 1rem;
+    }
+
+    button {
+      padding: 12px 25px;
+      border: 2px solid cyan;
+      background: transparent;
+      color: cyan;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: cyan;
+      color: black;
+      box-shadow: 0 0 20px cyan;
+    }
+
+    #bill {
+      display: none;
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid cyan;
+      border-radius: 15px;
+      padding: 30px;
+      max-width: 600px;
+      margin: 40px auto;
+      box-shadow: 0 0 15px cyan, 0 0 25px blue;
+      text-align: center;
+    }
+
+    #bill h3 {
+      color: white;
+      margin-bottom: 15px;
+    }
+
+    #bill p {
       color: #0ff;
+      font-size: 1.1rem;
+    }
+
+    #qr {
+      margin: 20px 0;
     }
   </style>
 </head>
@@ -71,86 +129,65 @@
 
   <header>⚡ Zyra Electronics ⚡</header>
 
-  <!-- Phones -->
+  <!-- Catalog (shortened for space) -->
   <section>
     <h2>📱 Zyra Phones</h2>
     <div class="grid">
-      <div class="card">
-        <h3>Zyra Pulse X1</h3>
-        <p>Sleek flagship with futuristic design.</p>
-      </div>
-      <div class="card">
-        <h3>Zyra Nova Z</h3>
-        <p>Stylish midrange with powerful features.</p>
-      </div>
-      <div class="card">
-        <h3>Zyra Quantum Pro</h3>
-        <p>High-end performance with cutting-edge tech.</p>
-      </div>
-      <div class="card">
-        <h3>Zyra Flux Mini</h3>
-        <p>Compact, youth-focused design.</p>
-      </div>
-      <div class="card">
-        <h3>Zyra Aero</h3>
-        <p>Ultra-thin performance model.</p>
-      </div>
+      <div class="card"><h3>Zyra Pulse X1</h3></div>
+      <div class="card"><h3>Zyra Nova Z</h3></div>
+      <div class="card"><h3>Zyra Quantum Pro</h3></div>
     </div>
   </section>
 
-  <!-- Laptops -->
+  <!-- User Details Form -->
   <section>
-    <h2>💻 ZyraBook Laptops</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>ZyraBook Core</h3>
-        <p>Affordable productivity laptop.</p>
-      </div>
-      <div class="card">
-        <h3>ZyraBook Edge</h3>
-        <p>Slim & lightweight ultrabook.</p>
-      </div>
-      <div class="card">
-        <h3>ZyraBook Titan</h3>
-        <p>Heavy-duty workstation beast.</p>
-      </div>
-      <div class="card">
-        <h3>ZyraBook Quantum</h3>
-        <p>AI-powered futuristic laptop.</p>
-      </div>
-      <div class="card">
-        <h3>ZyraBook Volt</h3>
-        <p>Gaming powerhouse with neon design.</p>
-      </div>
+    <h2>📝 Enter Your Details</h2>
+    <div class="form-container">
+      <form id="orderForm">
+        <input type="text" id="name" placeholder="Full Name" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="address" placeholder="Delivery Address" required>
+        <select id="product" required>
+          <option value="">Select Product</option>
+          <option>Zyra Pulse X1</option>
+          <option>Zyra Nova Z</option>
+          <option>Zyra Quantum Pro</option>
+          <option>ZyraBook Edge</option>
+          <option>ZyraPad Stellar</option>
+        </select>
+        <button type="submit">Generate Bill</button>
+      </form>
     </div>
   </section>
 
-  <!-- ZyraPads -->
-  <section>
-    <h2>📟 ZyraPads</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>ZyraPad Lite</h3>
-        <p>Budget-friendly student tablet.</p>
-      </div>
-      <div class="card">
-        <h3>ZyraPad Orbit</h3>
-        <p>Midrange entertainment tablet.</p>
-      </div>
-      <div class="card">
-        <h3>ZyraPad Stellar</h3>
-        <p>Premium creative device.</p>
-      </div>
-      <div class="card">
-        <h3>ZyraPad Flux</h3>
-        <p>Foldable futuristic tablet.</p>
-      </div>
-      <div class="card">
-        <h3>ZyraPad Zenith</h3>
-        <p>Ultimate flagship experience.</p>
-      </div>
-    </div>
-  </section>
+  <!-- Bill Section -->
+  <div id="bill">
+    <h3>🧾 Zyra Electronics - Purchase Bill</h3>
+    <p id="billDetails"></p>
+    <div id="qr"></div>
+    <p><strong>⚠ Show this bill to the front desk. You will receive your product within 3 hours.</strong></p>
+  </div>
+
+  <script>
+    document.getElementById("orderForm").addEventListener("submit", function(e){
+      e.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const address = document.getElementById("address").value;
+      const product = document.getElementById("product").value;
+
+      const billText = `Customer: ${name}\nEmail: ${email}\nAddress: ${address}\nProduct: ${product}`;
+      document.getElementById("billDetails").innerText = billText;
+
+      // Generate QR Code using API
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(billText)}`;
+      document.getElementById("qr").innerHTML = `<img src="${qrUrl}" alt="QR Code">`;
+
+      document.getElementById("bill").style.display = "block";
+      document.getElementById("bill").scrollIntoView({behavior: "smooth"});
+    });
+  </script>
 
 </body>
 </html>
