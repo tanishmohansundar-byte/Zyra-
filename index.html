@@ -23,15 +23,17 @@
     .screen {
       height: 100vh;
       width: 100vw;
-      display: none; /* all hidden by default */
+      display: none; /* hide all by default */
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     .active {
-      display: flex; /* only the active screen is shown */
+      display: flex; /* only show current screen */
     }
 
     h2 {
@@ -90,6 +92,38 @@
       box-shadow: 0 0 30px cyan, 0 0 50px blue;
     }
 
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 900px;
+      margin-top: 20px;
+    }
+
+    .product-card {
+      background: rgba(0,0,0,0.8);
+      border: 2px solid cyan;
+      border-radius: 12px;
+      text-align: center;
+      padding: 15px;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .product-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px cyan;
+    }
+
     #bill {
       background: rgba(0, 0, 0, 0.8);
       border: 2px solid cyan;
@@ -131,7 +165,7 @@
 <!-- Screen 3: Models -->
 <div class="screen" id="screen3">
   <h2 id="modelTitle"></h2>
-  <div class="options" id="models"></div>
+  <div class="product-grid" id="models"></div>
   <button onclick="showScreen(2)">⬅ Back</button>
 </div>
 
@@ -147,28 +181,49 @@
 </div>
 
 <script>
-  let selectedProduct = "";
-  let selectedPrice = 0;
   let username = "";
-
   const productPrices = {
+    // Phones
     "Zyra Pulse X1": 12000,
     "Zyra Nova Z": 18000,
     "Zyra Quantum Pro": 25000,
     "Zyra Flux Mini": 15000,
     "Zyra Aero": 20000,
 
+    // Laptops
     "ZyraBook Core": 30000,
     "ZyraBook Edge": 35000,
     "ZyraBook Titan": 40000,
     "ZyraBook Quantum": 45000,
     "ZyraBook Volt": 48000, // premium
 
+    // ZyraPads
     "ZyraPad Lite": 10000,
     "ZyraPad Orbit": 16000,
     "ZyraPad Stellar": 20000,
     "ZyraPad Flux": 22000,
     "ZyraPad Zenith": 28000
+  };
+
+  // Sample images (replace later with real ones)
+  const productImages = {
+    "Zyra Pulse X1": "https://picsum.photos/200/150?random=1",
+    "Zyra Nova Z": "https://picsum.photos/200/150?random=2",
+    "Zyra Quantum Pro": "https://picsum.photos/200/150?random=3",
+    "Zyra Flux Mini": "https://picsum.photos/200/150?random=4",
+    "Zyra Aero": "https://picsum.photos/200/150?random=5",
+
+    "ZyraBook Core": "https://picsum.photos/200/150?random=6",
+    "ZyraBook Edge": "https://picsum.photos/200/150?random=7",
+    "ZyraBook Titan": "https://picsum.photos/200/150?random=8",
+    "ZyraBook Quantum": "https://picsum.photos/200/150?random=9",
+    "ZyraBook Volt": "https://picsum.photos/200/150?random=10",
+
+    "ZyraPad Lite": "https://picsum.photos/200/150?random=11",
+    "ZyraPad Orbit": "https://picsum.photos/200/150?random=12",
+    "ZyraPad Stellar": "https://picsum.photos/200/150?random=13",
+    "ZyraPad Flux": "https://picsum.photos/200/150?random=14",
+    "ZyraPad Zenith": "https://picsum.photos/200/150?random=15"
   };
 
   function showScreen(num) {
@@ -192,10 +247,15 @@
 
     modelTitle.innerText = `Select a ${category} Model`;
     models.forEach(m => {
-      let btn = document.createElement("button");
-      btn.innerText = `${m} - ${productPrices[m]} lators`;
-      btn.onclick = () => generateBill(m);
-      modelsDiv.appendChild(btn);
+      let card = document.createElement("div");
+      card.className = "product-card";
+      card.innerHTML = `
+        <img src="${productImages[m]}" alt="${m}">
+        <h3>${m}</h3>
+        <p>Price: ${productPrices[m]} lators</p>
+      `;
+      card.onclick = () => generateBill(m);
+      modelsDiv.appendChild(card);
     });
 
     showScreen(3);
@@ -203,10 +263,9 @@
 
   function generateBill(product) {
     username = document.getElementById("username").value || "Customer";
-    selectedProduct = product;
-    selectedPrice = productPrices[product];
+    const price = productPrices[product];
 
-    const billText = `Name: ${username}\nProduct: ${selectedProduct}\nPrice: ${selectedPrice} lators`;
+    const billText = `Name: ${username}\nProduct: ${product}\nPrice: ${price} lators`;
     document.getElementById("billDetails").innerText = billText;
 
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(billText)}`;
